@@ -13,7 +13,6 @@
       overflow: hidden;
       height: 100vh;
     }
-
     .screen {
       position: absolute;
       inset: 0;
@@ -23,8 +22,6 @@
       background: radial-gradient(circle at center, #17102f, #03020b);
     }
     .screen.on { display: flex; }
-
-    /* Las estrellas NO deben bloquear clics */
     .stars {
       position: absolute;
       inset: 0;
@@ -45,7 +42,6 @@
       0% { opacity: 0.2; transform: scale(0.6); }
       100% { opacity: 1; transform: scale(1); }
     }
-
     .card {
       text-align: center;
       z-index: 2;
@@ -64,7 +60,6 @@
       line-height: 1.6;
       margin-bottom: 8px;
     }
-
     .btn {
       border: 1px solid #cbaaff;
       background: rgba(255,255,255,0.08);
@@ -79,7 +74,6 @@
     .btn:hover, .btn:active {
       background: rgba(255,255,255,0.18);
     }
-
     .object {
       position: absolute;
       font-size: 32px;
@@ -104,15 +98,6 @@
       top: 27%;
       opacity: 0.85;
     }
-    #moon {
-      left: 78%;
-      top: 62%;
-    }
-    #mystery-obj {
-      left: 42%;
-      top: 18%;
-    }
-
     .hint {
       position: absolute;
       bottom: 8%;
@@ -123,11 +108,10 @@
       font-size: 15px;
       z-index: 2;
     }
-
     .panel {
       display: none;
-      position: absolute;
-      z-index: 10;
+      position: fixed;
+      z-index: 20;
       max-width: 360px;
       width: 90%;
       text-align: center;
@@ -142,7 +126,6 @@
       transform: translate(-50%, -50%);
     }
     .panel.show { display: block; }
-
     .choices {
       display: flex;
       gap: 16px;
@@ -165,7 +148,6 @@
       align-items: center;
       justify-content: center;
     }
-
     .bouquet {
       text-align: center;
       z-index: 2;
@@ -181,7 +163,6 @@
       from { opacity: 0; transform: scale(0.2); }
       to { opacity: 1; transform: scale(1); }
     }
-
     .letter {
       width: min(90vw, 680px);
       max-height: 78vh;
@@ -206,7 +187,6 @@
       font-style: italic;
       margin-top: 18px;
     }
-
     .final svg {
       width: min(94vw, 760px);
       height: 240px;
@@ -280,8 +260,8 @@
         <button class="choice" onclick="shoot()">💫</button>
         <button class="choice" onclick="mystery()">❓</button>
       </div>
+      <button class="btn" style="margin-top: 30px;" onclick="go('bouquet')">Ver las flores 🌼</button>
     </div>
-    <div id="panel" class="panel"></div>
   </section>
 
   <!-- RAMO DE FLORES -->
@@ -314,7 +294,6 @@
   <section id="final" class="screen">
     <div class="stars"></div>
     <svg viewBox="0 0 760 260">
-      <!-- Constelación (puedes dejarla así o ajustar después) -->
       <line x1="30" y1="38" x2="75" y2="120"/>
       <line x1="75" y1="120" x2="120" y2="55"/>
       <line x1="120" y1="55" x2="165" y2="130"/>
@@ -330,7 +309,6 @@
       <line x1="570" y1="65" x2="615" y2="150"/>
       <line x1="615" y1="150" x2="660" y2="55"/>
       <line x1="660" y1="55" x2="705" y2="140"/>
-
       <circle cx="30" cy="38" r="4"/>
       <circle cx="75" cy="120" r="4"/>
       <circle cx="120" cy="55" r="4"/>
@@ -348,7 +326,6 @@
       <circle cx="660" cy="55" r="4"/>
       <circle cx="705" cy="140" r="4"/>
     </svg>
-
     <div id="finalmsg" class="finalmsg">
       Gracias por ser ese Sirio que necesitaba mi vida.<br>
       Te amo, Getsi. ❤️
@@ -356,8 +333,10 @@
     </div>
   </section>
 
+  <!-- Panel global (siempre disponible) -->
+  <div id="panel" class="panel"></div>
+
   <script>
-    // Crear estrellas
     function makeStars() {
       document.querySelectorAll('.stars').forEach(container => {
         for (let i = 0; i < 90; i++) {
@@ -372,10 +351,10 @@
     }
     makeStars();
 
-    // Cambiar de pantalla
     function go(id) {
       document.querySelectorAll('.screen').forEach(el => el.classList.remove('on'));
       document.getElementById(id).classList.add('on');
+      document.getElementById('panel').classList.remove('show');
       
       if (id === 'final') {
         setTimeout(() => {
@@ -384,11 +363,8 @@
       }
     }
 
-    // Mostrar panel de información
     function showPanel(title, message, nextScreen) {
       const p = document.getElementById('panel');
-      if (!p) return;
-      
       let btnHtml = nextScreen 
         ? `<button class="btn" onclick="go('${nextScreen}')">Continuar</button>`
         : `<button class="btn" onclick="this.parentElement.classList.remove('show')">Cerrar</button>`;
@@ -397,13 +373,11 @@
       p.classList.add('show');
     }
 
-    // Estrella fugaz
     function shoot() {
       showPanel(
         'Una estrella fugaz 💫',
         'Dicen que cuando ves una estrella fugaz debes pedir un deseo.'
       );
-      // Después de cerrar, el usuario puede seguir explorando
     }
 
     function mystery() {
