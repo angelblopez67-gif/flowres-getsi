@@ -3,385 +3,598 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Para Getsi 🌌💜</title>
+    <title>Para Getsi ✨</title>
     <style>
-        body {
+        * {
             margin: 0;
             padding: 0;
-            background: radial-gradient(circle at center, #130722 0%, #040108 100%);
-            color: #fce4ec;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            overflow: hidden;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #030008;
+            color: #f3e8ff;
+            font-family: 'system-ui', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-        }
-
-        #space-sky, #stardust-canvas {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 1;
-        }
-
-        #stardust-canvas {
-            z-index: 5;
-        }
-
-        .background-star {
-            position: absolute;
-            background: #fff;
-            border-radius: 50%;
-            animation: twinkle var(--duration) infinite ease-in-out;
-        }
-
-        @keyframes twinkle {
-            0%, 100% { opacity: 0.1; transform: scale(0.5); }
-            50% { opacity: 0.8; transform: scale(1.2); }
         }
 
         .screen {
-            display: none;
             position: absolute;
-            text-align: center;
             width: 100%;
-            height: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            flex-direction: column;
+            transition: opacity 1.5s ease;
             opacity: 0;
-            transform: scale(0.95);
-            transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1), transform 1s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
             padding: 20px;
-            box-sizing: border-box;
-            z-index: 10;
+            text-align: center;
         }
 
         .screen.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Fondo de estrellas base */
+        #starfield {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at center, #100521 0%, #030008 100%);
+        }
+
+        /* Pantalla 1: Inicio Místico */
+        #screen-1 .mystic-text {
+            font-size: 1.5rem;
+            color: #d8b4fe;
+            margin-bottom: 30px;
+            animation: pulseText 3s infinite ease-in-out;
+            text-shadow: 0 0 15px rgba(216, 180, 254, 0.5);
+        }
+
+        .star-container {
+            position: relative;
+            cursor: pointer;
+            width: 80px;
+            height: 80px;
             display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .main-star {
+            font-size: 3rem;
+            animation: floatStar 3s infinite ease-in-out, glowSirius 2s infinite alternate;
+            filter: drop-shadow(0 0 20px #e9d5ff);
+            transition: transform 0.3s ease;
+        }
+
+        .main-star:hover {
+            transform: scale(1.2);
+        }
+
+        /* Pantalla 2 y 3: Ramo y Revelación */
+        .bouquet-container {
+            position: relative;
+            width: 280px;
+            height: 380px;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .bouquet-container.visible {
             opacity: 1;
             transform: scale(1);
         }
 
-        .sky-container {
+        /* Pantalla 5: Exploración del Cielo */
+        .sky-exploration {
             position: relative;
             width: 100%;
-            height: 100vh;
+            max-width: 500px;
+            height: 60vh;
         }
 
-        /* Sirio con brillo lila/blanco distintivo y posición astronómica en Can Mayor */
-        .sirius-star {
+        .explore-star {
             position: absolute;
-            top: 42%;
-            left: 52%;
-            width: 26px;
-            height: 26px;
-            background: #fff;
+            cursor: pointer;
+            background: rgba(216, 180, 254, 0.15);
+            border: 2px solid rgba(216, 180, 254, 0.6);
             border-radius: 50%;
-            cursor: pointer;
-            box-shadow: 0 0 35px #e1bee7, 0 0 60px #ba68c8;
-            animation: siriusPulse 2s infinite alternate;
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            transition: all 0.4s ease;
+            box-shadow: 0 0 15px rgba(216, 180, 254, 0.3);
         }
 
-        @keyframes siriusPulse {
-            0% { transform: scale(1); box-shadow: 0 0 25px #e1bee7, 0 0 45px #ba68c8; }
-            100% { transform: scale(1.35); box-shadow: 0 0 45px #f48fb1, 0 0 80px #ab47bc; }
+        .explore-star:hover {
+            background: rgba(216, 180, 254, 0.4);
+            transform: scale(1.15);
+            box-shadow: 0 0 25px rgba(233, 213, 255, 0.8);
         }
 
-        .sirius-star:hover {
-            transform: scale(1.6);
+        .explore-star.clicked {
+            border-color: #f472b6;
+            background: rgba(244, 114, 182, 0.3);
         }
 
-        #sky-hint {
+        /* Posiciones de las estrellas en el cielo */
+        #star-sirio { top: 20%; left: 25%; width: 55px; height: 55px; }
+        #star-andromeda { top: 35%; right: 20%; width: 50px; height: 50px; }
+        #star-luna { bottom: 30%; left: 15%; width: 50px; height: 50px; }
+        #star-fugaz { top: 15%; right: 35%; width: 45px; height: 45px; }
+        #star-desconocida { bottom: 20%; right: 25%; width: 55px; height: 55px; }
+
+        .popup-card {
             position: absolute;
-            bottom: 60px;
-            width: 100%;
-            text-align: center;
-            color: #d1c4e9;
-            font-size: 0.95rem;
-            letter-spacing: 0.5px;
-            text-shadow: 0 0 10px rgba(186,104,200,0.5);
-            animation: fadeInOut 3s infinite alternate;
+            bottom: 5vh;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: rgba(16, 5, 33, 0.9);
+            border: 1px solid rgba(216, 180, 254, 0.3);
+            padding: 20px 25px;
+            border-radius: 16px;
+            max-width: 90%;
+            width: 360px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 10;
         }
 
-        @keyframes fadeInOut {
-            0% { opacity: 0.4; }
-            100% { opacity: 1; }
+        .popup-card.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+            pointer-events: auto;
         }
 
-        .btn-custom {
-            background: linear-gradient(135deg, #ab47bc, #ec407a);
-            border: none;
-            color: white;
-            padding: 14px 34px;
-            font-size: 1.1rem;
-            border-radius: 35px;
-            cursor: pointer;
-            box-shadow: 0 0 25px rgba(171, 71, 188, 0.5);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            margin-top: 25px;
-            letter-spacing: 1px;
-        }
-
-        .btn-custom:hover {
-            transform: scale(1.08);
-            box-shadow: 0 0 40px rgba(236, 64, 122, 0.9);
-        }
-
-        /* Ramo Cósmico Vectorial (Lila y Rosa Pastel) */
-        .vector-bouquet {
-            width: 220px;
-            height: 270px;
-            margin-bottom: 15px;
-            filter: drop-shadow(0 0 30px rgba(244, 143, 177, 0.6));
-            animation: floatBouquet 4s ease-in-out infinite;
-        }
-
-        @keyframes floatBouquet {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-10px) rotate(1.2deg); }
-        }
-
-        .letter-box {
-            max-width: 460px;
-            padding: 30px;
-            background: rgba(26, 14, 43, 0.92);
-            border: 1px solid rgba(244, 143, 177, 0.4);
-            border-radius: 20px;
-            box-shadow: 0 0 40px rgba(186, 104, 200, 0.35);
-            text-align: left;
-            line-height: 1.7;
+        .popup-card p {
             font-size: 1.05rem;
-            animation: letterSlide 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+            line-height: 1.5;
+            color: #f3e8ff;
+            margin-bottom: 15px;
         }
 
-        @keyframes letterSlide {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
+        .close-btn {
+            background: #d8b4fe;
+            color: #030008;
+            border: none;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .close-btn:hover {
+            background: #e9d5ff;
+        }
+
+        /* Pantalla de Carta */
+        .letter-card {
+            background: rgba(16, 5, 33, 0.85);
+            border: 1px solid rgba(216, 180, 254, 0.2);
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 440px;
+            width: 90%;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.7);
+            text-align: left;
+            max-height: 75vh;
+            overflow-y: auto;
+        }
+
+        .letter-card p {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: #e9d5ff;
+            margin-bottom: 15px;
+        }
+
+        .letter-card .signature {
+            text-align: right;
+            font-weight: bold;
+            color: #f472b6;
+            margin-top: 20px;
+        }
+
+        /* Animaciones generales */
+        @keyframes pulseText {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        @keyframes floatStar {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        @keyframes glowSirius {
+            from { filter: drop-shadow(0 0 10px #d8b4fe); }
+            to { filter: drop-shadow(0 0 25px #ffffff); }
+        }
+
+        .next-step-btn {
+            margin-top: 25px;
+            background: linear-gradient(135deg, #c084fc, #f472b6);
+            color: #fff;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(192, 132, 252, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .next-step-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(244, 114, 182, 0.6);
+        }
+
+        /* Canvas para constelación y efectos */
+        #fx-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
         }
     </style>
 </head>
 <body>
 
-    <div id="space-sky"></div>
-    <canvas id="stardust-canvas"></canvas>
+    <canvas id="starfield"></canvas>
+    <canvas id="fx-canvas"></canvas>
 
-    <!-- Pantalla 1: El despertar de Sirio en Can Mayor -->
-    <div class="screen active" id="screen1">
-        <div class="sky-container">
-            <!-- Pequeñas estrellas de fondo sutiles -->
-            <div class="background-star" style="width: 2px; height: 2px; top: 20%; left: 30%;"></div>
-            <div class="background-star" style="width: 3px; height: 3px; top: 70%; left: 20%;"></div>
-            <div class="background-star" style="width: 2px; height: 2px; top: 30%; left: 80%;"></div>
-            <div class="background-star" style="width: 3px; height: 3px; top: 75%; left: 75%;"></div>
-            <div class="background-star" style="width: 2px; height: 2px; top: 50%; left: 15%;"></div>
-
-            <!-- Sirio (Can Mayor) -->
-            <div class="sirius-star" onclick="triggerStardustAndAdvance(event)"></div>
-
-            <div id="sky-hint">El cielo está en penumbra... Toca la estrella que más brilla ✨</div>
+    <!-- PANTALLA 1: Inicio Místico -->
+    <div id="screen-1" class="screen active">
+        <p class="mystic-text">Tengo algo para ti, Getsi ✨</p>
+        <div class="star-container" onclick="goToScreen(2)">
+            <div class="main-star">⭐</div>
         </div>
     </div>
 
-    <!-- Pantalla 2: El jardín cósmico floreciendo -->
-    <div class="screen" id="screen2">
-        <svg class="vector-bouquet" viewBox="0 0 200 250" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <!-- Tallos -->
-            <path d="M100 130 L90 220" stroke="#81c784" stroke-width="4" stroke-linecap="round"/>
-            <path d="M100 130 L110 220" stroke="#a5d6a7" stroke-width="4" stroke-linecap="round"/>
-            <path d="M100 130 L100 230" stroke="#66bb6a" stroke-width="5" stroke-linecap="round"/>
-            
-            <!-- Envoltura elegante lila -->
-            <path d="M70 180 C85 170 115 170 130 180 C140 200 120 215 100 210 C80 215 60 200 70 180 Z" fill="#ba68c8" opacity="0.9"/>
-            <path d="M60 175 C45 160 50 140 70 155 Z" fill="#ab47bc"/>
-            <path d="M140 175 C155 160 150 140 130 155 Z" fill="#ab47bc"/>
+    <!-- PANTALLA 2: Ramo Cósmico y Revelación -->
+    <div id="screen-2" class="screen">
+        <div id="bouquet" class="bouquet-container">
+            <!-- SVG Ramo Completo con Tulipanes, Cerezos, Rosas, Lavanda, Estrellas y Andrómeda de fondo -->
+            <svg viewBox="0 0 300 400" width="100%" height="100%">
+                <defs>
+                    <linearGradient id="stemGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#4ade80"/>
+                        <stop offset="100%" stop-color="#166534"/>
+                    </linearGradient>
+                    <linearGradient id="tulipGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#e879f9"/>
+                        <stop offset="100%" stop-color="#a855f7"/>
+                    </linearGradient>
+                    <linearGradient id="roseGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#f472b6"/>
+                        <stop offset="100%" stop-color="#be185d"/>
+                    </linearGradient>
+                </defs>
 
-            <!-- Flores cósmicas y lavanda en lila y rosa pastel -->
-            <circle cx="100" cy="85" r="32" fill="url(#gradRose1)" />
-            <circle cx="100" cy="85" r="20" fill="url(#gradRose2)" opacity="0.8"/>
-            <circle cx="65" cy="100" r="26" fill="url(#gradTulip1)" />
-            <circle cx="135" cy="100" r="26" fill="url(#gradTulip2)" />
-            <circle cx="80" cy="55" r="24" fill="url(#gradRose2)" />
-            <circle cx="120" cy="55" r="24" fill="url(#gradRose1)" />
+                <!-- Fondo sutil de Andrómeda dentro del ramo -->
+                <ellipse cx="150" cy="180" rx="90" ry="40" fill="rgba(216,180,254,0.08)" transform="rotate(-25 150 180)" filter="blur(8px)"/>
 
-            <!-- Destellos estelares sobre las flores -->
-            <circle cx="95" cy="78" r="3.5" fill="#fff" filter="drop-shadow(0 0 6px #fff)" />
-            <circle cx="125" cy="95" r="3" fill="#fff" filter="drop-shadow(0 0 6px #fff)" />
-            <circle cx="75" cy="95" r="3" fill="#fff" filter="drop-shadow(0 0 6px #fff)" />
-            <circle cx="100" cy="45" r="2.5" fill="#fff" />
+                <!-- Tallos -->
+                <path d="M150 350 L130 220" stroke="url(#stemGrad)" stroke-width="4" stroke-linecap="round"/>
+                <path d="M150 350 L165-210" stroke="url(#stemGrad)" stroke-width="4" stroke-linecap="round"/>
+                <path d="M150 350 L150 200" stroke="url(#stemGrad)" stroke-width="5" stroke-linecap="round"/>
+                <path d="M150 350 L110 230" stroke="url(#stemGrad)" stroke-width="3" stroke-linecap="round"/>
+                <path d="M150 350 L190 230" stroke="url(#stemGrad)" stroke-width="3" stroke-linecap="round"/>
 
-            <defs>
-                <radialGradient id="gradRose1" cx="50%" cy="50%" r="50%">
-                    <stop offset="0%" stop-color="#f48fb1" />
-                    <stop offset="100%" stop-color="#ad1457" />
-                </radialGradient>
-                <radialGradient id="gradRose2" cx="50%" cy="50%" r="50%">
-                    <stop offset="0%" stop-color="#f8bbd0" />
-                    <stop offset="100%" stop-color="#c2185b" />
-                </radialGradient>
-                <radialGradient id="gradTulip1" cx="50%" cy="50%" r="50%">
-                    <stop offset="0%" stop-color="#e1bee7" />
-                    <stop offset="100%" stop-color="#7b1fa2" />
-                </radialGradient>
-                <radialGradient id="gradTulip2" cx="50%" cy="50%" r="50%">
-                    <stop offset="0%" stop-color="#ce93d8" />
-                    <stop offset="100%" stop-color="#8e24aa" />
-                </radialGradient>
-            </defs>
-        </svg>
+                <!-- Lavanda y detalles -->
+                <circle cx="110" cy="120" r="4" fill="#c084fc"/><circle cx="105" cy="130" r="4" fill="#c084fc"/><circle cx="115" cy="140" r="4" fill="#c084fc"/>
+                <circle cx="190" cy="120" r="4" fill="#c084fc"/><circle cx="195" cy="130" r="4" fill="#c084fc"/><circle cx="185" cy="140" r="4" fill="#c084fc"/>
 
-        <h3 style="font-weight: 300; color: #f8bbd0; font-size: 1.3rem; margin-top: 10px;">Esto es para ti, Getsi. 💜✨</h3>
-        <button class="btn-custom" onclick="nextScreen(3)">Leer la carta 💌</button>
-    </div>
+                <!-- Rosas centrales -->
+                <path d="M135 170 Q150 150 165 170 Q180 190 165 210 Q150 220 135 210 Q120 190 135 170 Z" fill="url(#roseGrad)"/>
+                <path d="M120 195 Q135 180 150 195 Q165 210 150 225 Q135 235 120 225 Q105 210 120 195 Z" fill="#db2777" opacity="0.8"/>
 
-    <!-- Pantalla 3: La Carta -->
-    <div class="screen" id="screen3">
-        <div class="letter-box">
-            <p>Estas flores y este detalle es con mucho amor y cariño para ti mi Getsi. Sé que has pasado por momentos difíciles y decepciones de personas que no valen la pena, pero como las estrellas, llegaste a mi vida para iluminarla y llenarla de color...</p>
-            <p style="margin-top: 15px;"><strong>Te amo con todo mi corazón. ❤️✨</strong></p>
-            <p style="text-align: right; margin-top: 15px; color: #f8bbd0;"><em>Tu rabanito 🥹❤️</em></p>
+                <!-- Tulipanes lila -->
+                <path d="M80 140 C70 100 100 80 110 110 C120 80 150 100 140 140 C130 170 90 170 80 140 Z" fill="url(#tulipGrad)"/>
+                <path d="M160 140 C150 100 180 80 190 110 C200 80 230 100 220 140 C210 170 170 170 160 140 Z" fill="url(#tulipGrad)"/>
+
+                <!-- Flores de cerezo rosa pastel -->
+                <g fill="#fbcfe8">
+                    <circle cx="110" cy="80" r="10"/><circle cx="95" cy="95" r="10"/><circle cx="125" cy="95" r="10"/><circle cx="100" cy="110" r="10"/><circle cx="120" cy="110" r="10"/>
+                    <circle cx="110" cy="95" r="5" fill="#f472b6"/>
+                </g>
+                <g fill="#fbcfe8">
+                    <circle cx="190" cy="80" r="10"/><circle cx="175" cy="95" r="10"/><circle cx="205" cy="95" r="10"/><circle cx="180" cy="110" r="10"/><circle cx="200" cy="110" r="10"/>
+                    <circle cx="190" cy="95" r="5" fill="#f472b6"/>
+                </g>
+
+                <!-- Estrellitas de cinco pétalos -->
+                <polygon points="150,70 153,78 161,79 155,85 157,93 150,89 142,93 144,85 138,79 146,78" fill="#fef08a"/>
+                <polygon points="80,200 82,205 87,206 83,210 84,215 80,212 75,215 76,210 72,206 77,205" fill="#fef08a"/>
+                <polygon points="220,190 222,195 227,196 223,200 224,205 220,202 215,205 216,200 212,196 217,195" fill="#fef08a"/>
+
+                <!-- Lazo del ramo -->
+                <path d="M125 280 Q150 270 175 280 Q160 310 150 330 Q140 310 125 280 Z" fill="#f472b6"/>
+                <circle cx="150" cy="285" r="8" fill="#fda4af"/>
+            </svg>
         </div>
-        <button class="btn-custom" onclick="nextScreen(4)">Ver el cielo final ⭐</button>
+        <button id="explore-btn" class="next-step-btn" style="display: none;" onclick="goToScreen(3)">Explorar el cielo ✨</button>
     </div>
 
-    <!-- Pantalla 4: Can Mayor y Constelación Final -->
-    <div class="screen" id="screen4">
-        <svg width="340" height="140" viewBox="0 0 340 140" style="overflow: visible; margin-bottom: 15px;">
-            <path d="M 20,70 L 45,30 L 70,70 L 45,110 Z M 90,30 L 90,110 M 115,30 L 140,30 L 115,70 L 140,110 M 165,30 L 165,110 M 190,30 L 215,30 L 190,70 L 215,70 M 240,30 L 240,110 L 265,110 M 290,30 L 290,110 M 290,30 L 315,70 L 290,70" 
-                  stroke="rgba(244, 143, 177, 0.7)" stroke-width="2.5" fill="none" stroke-dasharray="800" stroke-dashoffset="800">
-                <animate attributeName="stroke-dashoffset" from="800" to="0" dur="5s" fill="freeze" />
-            </path>
-            <circle cx="20" cy="70" r="3.5" fill="#fff" filter="drop-shadow(0 0 8px #ab47bc)" />
-            <circle cx="45" cy="30" r="3.5" fill="#fff" filter="drop-shadow(0 0 8px #ab47bc)" />
-            <circle cx="70" cy="70" r="3.5" fill="#fff" filter="drop-shadow(0 0 8px #ab47bc)" />
-            <circle cx="45" cy="110" r="3.5" fill="#fff" filter="drop-shadow(0 0 8px #ab47bc)" />
-            <circle cx="90" cy="30" r="3.5" fill="#fff" filter="drop-shadow(0 0 8px #ab47bc)" />
-            <circle cx="90" cy="110" r="3.5" fill="#fff" filter="drop-shadow(0 0 8px #ab47bc)" />
-            <circle cx="115" cy="30" r="3.5" fill="#fff" filter="drop-shadow(0 0 8px #ab47bc)" />
-            <circle cx="140" cy="30" r="3.5" fill="#fff" filter="drop-shadow(0 0 8px #ab47bc)" />
-            <circle cx="115" cy="70" r="3.5" fill="#fff" filter="drop-shadow(0 0 8px #ab47bc)" />
-            <circle cx="140" cy="110" r="3.5" fill="#fff" filter="drop-shadow(0 0 8px #ab47bc)" />
-            <circle cx="165" cy="30" r="3.5" fill="#fff" filter="drop-shadow(0 0 8px #ab47bc)" />
-            <circle cx="165" cy="110" r="3.5" fill="#fff" filter="drop-shadow(0 0 8px #ab47bc)" />
-            <circle cx="190" cy="30" r="3.5" fill="#fff" filter="drop-shadow(0 0 8px #ab47bc)" />
-            <circle cx="215" cy="30" r="3.5" fill="#fff" filter="drop-shadow(0 0 8px #ab47bc)" />
-            <circle cx="190" cy="70" r="3.5" fill="#fff" filter="drop-shadow(0 0 8px #ab47bc)" />
-            <circle cx="215" cy="70" r="3.5" fill="#fff" filter="drop-shadow(0 0 8px #ab47bc)" />
-            <circle cx="240" cy="30" r="3.5" fill="#fff" filter="drop-shadow(0 0 8px #ab47bc)" />
-            <circle cx="240" cy="110" r="3.5" fill="#fff" filter="drop-shadow(0 0 8px #ab47bc)" />
-            <circle cx="265" cy="110" r="3.5" fill="#fff" filter="drop-shadow(0 0 8px #ab47bc)" />
-            <circle cx="290" cy="30" r="3.5" fill="#fff" filter="drop-shadow(0 0 8px #ab47bc)" />
-            <circle cx="290" cy="110" r="3.5" fill="#fff" filter="drop-shadow(0 0 8px #ab47bc)" />
-            <circle cx="315" cy="70" r="3.5" fill="#fff" filter="drop-shadow(0 0 8px #ab47bc)" />
-            <circle cx="330" cy="70" r="6" fill="#fff" filter="drop-shadow(0 0 15px #f48fb1)">
-                <animate attributeName="opacity" values="1;0.3;1" dur="2s" repeatCount="indefinite" />
-            </circle>
-        </svg>
-        <div style="font-size: 1.15rem; color: #f8bbd0; font-weight: 300; line-height: 1.6; margin-top: 15px; text-shadow: 0 0 10px rgba(248,187,208,0.4);">
-            Gracias por ser ese Sirio que necesitaba mi vida. ✨<br>
-            <strong>Te amo, Getsi. ❤️</strong>
+    <!-- PANTALLA 3: Exploración del Cielo (Paso 5) -->
+    <div id="screen-3" class="screen">
+        <div class="sky-exploration">
+            <div id="star-sirio" class="explore-star" onclick="openStar('sirio')">⭐</div>
+            <div id="star-andromeda" class="explore-star" onclick="openStar('andromeda')">🌌</div>
+            <div id="star-luna" class="explore-star" onclick="openStar('luna')">🌙</div>
+            <div id="star-fugaz" class="explore-star" onclick="openStar('fugaz')">🌠</div>
+            <div id="star-desconocida" class="explore-star" onclick="openStar('desconocida')">💫</div>
+        </div>
+
+        <!-- Tarjetas Popups de las Estrellas -->
+        <div id="popup-sirio" class="popup-card">
+            <p>Hay estrellas que simplemente destacan. Sirio es una de ellas, y tú también destacas con tu propio brillo. ✨</p>
+            <button class="close-btn" onclick="closePopup('sirio')">Continuar</button>
+        </div>
+        <div id="popup-andromeda" class="popup-card">
+            <p>Andrómeda guarda historias que llevan siglos viajando entre las estrellas… algunas hablan de amor. 🌌</p>
+            <button class="close-btn" onclick="closePopup('andromeda')">Continuar</button>
+        </div>
+        <div id="popup-luna" class="popup-card">
+            <p>A veces alguien llega y, sin hacer demasiado, consigue cambiar por completo el paisaje. 🌙✨</p>
+            <button class="close-btn" onclick="closePopup('luna')">Continuar</button>
+        </div>
+        <div id="popup-fugaz" class="popup-card">
+            <p id="fugaz-text">Dicen que cuando ves una estrella fugaz debes pedir un deseo…</p>
+            <button id="fugaz-btn" class="close-btn" onclick="nextFugazStep()">Siguiente</button>
+        </div>
+        <div id="popup-desconocida" class="popup-card">
+            <p>Hay cosas que todavía no te he contado…</p>
+            <button class="close-btn" onclick="triggerSecretDoor()">Descubrir</button>
+        </div>
+    </div>
+
+    <!-- PANTALLA 4: La Carta -->
+    <div id="screen-4" class="screen">
+        <div class="letter-card">
+            <p>Estás flores y este gran detalle es con mucho amor y cariño para ti mi getsi se que as pasado por momentos difíciles y desespciones de personas que no valen la pena pero como las estrellas llegaste a mi vida para iluminarla y llenarla de color y afortunadamente yo también llegué a tuya con el mismo propósito, en verdad que te quiero muchísimo y si nadie es capas para ver la persona que eres tus cualidades tus virtudes yo lo haré y estaré dispuesto a hacer esto y más por qué es lo que te mereces y por qué vales totalmente la pena para poder darlo todo te amo con todo mi corazón</p>
+            <p class="signature">Tu rabanito ❤️✨</p>
+        </div>
+        <button class="next-step-btn" onclick="goToScreen(5)">Continuar al cielo estelar ✨</button>
+    </div>
+
+    <!-- PANTALLA 5: Constelación GESIBEL y Cierre Final -->
+    <div id="screen-5" class="screen">
+        <div id="final-message" style="opacity: 0; transition: opacity 2s ease; margin-top: 30px;">
+            <p style="font-size: 1.2rem; line-height: 1.6; color: #f3e8ff; text-shadow: 0 0 10px rgba(216,180,254,0.6);">
+                Gracias por ser ese Sirio que necesitaba mi vida. ✨<br>
+                Te amo, Getsi. ❤️
+            </p>
         </div>
     </div>
 
     <script>
-        // Generador de estrellas de fondo
-        const sky = document.getElementById('space-sky');
-        for (let i = 0; i < 80; i++) {
-            const star = document.createElement('div');
-            star.classList.add('background-star');
-            const size = Math.random() * 2.5 + 1;
-            star.style.width = `${size}px`;
-            star.style.height = `${size}px`;
-            star.style.top = `${Math.random() * 100}%`;
-            star.style.left = `${Math.random() * 100}%`;
-            star.style.setProperty('--duration', `${Math.random() * 3 + 2}s`);
-            star.style.animationDelay = `${Math.random() * 5}s`;
-            sky.appendChild(star);
-        }
+        // Generador de fondo de estrellas aleatorias
+        const starfieldCanvas = document.getElementById('starfield');
+        const ctx = starfieldCanvas.getContext('2d');
+        let width = starfieldCanvas.width = window.innerWidth;
+        let height = starfieldCanvas.height = window.innerHeight;
 
-        // Canvas para el efecto de polvo estelar al tocar a Sirio
-        const canvas = document.getElementById('stardust-canvas');
-        const ctx = canvas.getContext('2d');
-        let particles = [];
-
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
-
-        function triggerStardustAndAdvance(event) {
-            const rect = event.target.getBoundingClientRect();
-            const startX = rect.left + rect.width / 2;
-            const startY = rect.top + rect.height / 2;
-
-            // Crear explosión de partículas de polvo estelar (lila y rosa pastel)
-            for (let i = 0; i < 70; i++) {
-                const angle = Math.random() * Math.PI * 2;
-                const speed = Math.random() * 6 + 2;
-                particles.push({
-                    x: startX,
-                    y: startY,
-                    vx: Math.cos(angle) * speed,
-                    vy: Math.sin(angle) * speed,
-                    radius: Math.random() * 3.5 + 1,
-                    color: Math.random() > 0.5 ? '#f48fb1' : '#ce93d8',
-                    alpha: 1,
-                    decay: Math.random() * 0.02 + 0.015
-                });
-            }
-
-            animateStardust();
-
-            // Transición a la siguiente pantalla después de la animación de la estela
-            setTimeout(() => {
-                nextScreen(2);
-            }, 800);
-        }
-
-        function animateStardust() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles.forEach((p, index) => {
-                p.x += p.vx;
-                p.y += p.vy;
-                p.alpha -= p.decay;
-                if (p.alpha <= 0) {
-                    particles.splice(index, 1);
-                    return;
-                }
-                ctx.save();
-                ctx.globalAlpha = p.alpha;
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                ctx.fillStyle = p.color;
-                ctx.shadowBlur = 12;
-                ctx.shadowColor = p.color;
-                ctx.fill();
-                ctx.restore();
+        const stars = [];
+        for (let i = 0; i < 150; i++) {
+            stars.push({
+                x: Math.random() * width,
+                y: Math.random() * height,
+                radius: Math.random() * 1.5,
+                alpha: Math.random(),
+                speed: Math.random() * 0.02 + 0.005
             });
+        }
 
-            if (particles.length > 0) {
-                requestAnimationFrame(animateStardust);
+        function drawStarfield() {
+            ctx.clearRect(0, 0, width, height);
+            ctx.fillStyle = '#ffffff';
+            stars.forEach(star => {
+                ctx.globalAlpha = star.alpha;
+                ctx.beginPath();
+                ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+                ctx.fill();
+                star.alpha += star.speed;
+                if (star.alpha > 1 || star.alpha < 0.2) star.speed = -star.speed;
+            });
+            requestAnimationFrame(drawStarfield);
+        }
+        drawStarfield();
+
+        window.addEventListener('resize', () => {
+            width = starfieldCanvas.width = window.innerWidth;
+            height = starfieldCanvas.height = window.innerHeight;
+        });
+
+        // Control de pantallas
+        function goToScreen(screenNumber) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            const target = document.getElementById(`screen-${screenNumber}`);
+            target.classList.add('active');
+
+            if (screenNumber === 2) {
+                setTimeout(() => {
+                    document.getElementById('bouquet').classList.add('visible');
+                    setTimeout(() => {
+                        document.getElementById('explore-btn').style.display = 'block';
+                    }, 1500);
+                }, 500);
+            }
+
+            if (screenNumber === 5) {
+                startConstellationSequence();
             }
         }
 
-        function nextScreen(screenNumber) {
-            const currentActive = document.querySelector('.screen.active');
-            if (currentActive) {
-                currentActive.classList.remove('active');
+        // Interacción Estrellas del Cielo (Paso 5)
+        function openStar(id) {
+            document.querySelectorAll('.popup-card').forEach(p => p.classList.remove('show'));
+            document.getElementById(`star-${id}`).classList.add('clicked');
+            document.getElementById(`popup-${id}`).classList.add('show');
+        }
+
+        function closePopup(id) {
+            document.getElementById(`popup-${id}`).classList.remove('show');
+        }
+
+        // Secuencia Estrella Fugaz
+        let fugazStep = 1;
+        function nextFugazStep() {
+            const textEl = document.getElementById('fugaz-text');
+            if (fugazStep === 1) {
+                textEl.textContent = "Yo ya pedí el mío: quedarme eternamente contigo. 💜";
+                fugazStep = 2;
+            } else if (fugazStep === 2) {
+                textEl.textContent = "Ahora es tu turno de pedir un deseo. 🌠";
+                fugazStep = 3;
+            } else {
+                closePopup('fugaz');
+                triggerShootingStarEffect();
             }
-            setTimeout(() => {
-                const nextTarget = document.getElementById('screen' + screenNumber);
-                if (nextTarget) {
-                    nextTarget.classList.add('active');
+        }
+
+        function triggerShootingStarEffect() {
+            const fxCanvas = document.getElementById('fx-canvas');
+            const fCtx = fxCanvas.getContext('2d');
+            fxCanvas.width = window.innerWidth;
+            fxCanvas.height = window.innerHeight;
+
+            let x = window.innerWidth * 0.7;
+            let y = window.innerHeight * 0.2;
+            let progress = 0;
+
+            function animateFugaz() {
+                fCtx.clearRect(0, 0, fxCanvas.width, fxCanvas.height);
+                fCtx.strokeStyle = '#f472b6';
+                fCtx.lineWidth = 3;
+                fCtx.shadowBlur = 15;
+                fCtx.shadowColor = '#d8b4fe';
+
+                fCtx.beginPath();
+                fCtx.moveTo(x, y);
+                fCtx.lineTo(x - progress * 2, y + progress * 1.5);
+                fCtx.stroke();
+
+                progress += 15;
+                if (progress < 400) {
+                    requestAnimationFrame(animateFugaz);
+                } else {
+                    fCtx.clearRect(0, 0, fxCanvas.width, fxCanvas.height);
                 }
-            }, 500);
+            }
+            animateFugaz();
+        }
+
+        // Puerta Secreta Estrellada (Estrella desconocida)
+        function triggerSecretDoor() {
+            closePopup('desconocida');
+            const fxCanvas = document.getElementById('fx-canvas');
+            const fCtx = fxCanvas.getContext('2d');
+            fxCanvas.width = window.innerWidth;
+            fxCanvas.height = window.innerHeight;
+
+            // Apagar cielo y conectar Sirio con Estrella Desconocida
+            let alpha = 0;
+            function fadeToBlack() {
+                fCtx.fillStyle = `rgba(3, 0, 8, ${alpha})`;
+                fCtx.fillRect(0, 0, fxCanvas.width, fxCanvas.height);
+                alpha += 0.05;
+                if (alpha < 1) {
+                    requestAnimationFrame(fadeToBlack);
+                } else {
+                    setTimeout(() => {
+                        fCtx.clearRect(0, 0, fxCanvas.width, fxCanvas.height);
+                        goToScreen(4);
+                    }, 1000);
+                }
+            }
+            fadeToBlack();
+        }
+
+        // Constelación GESIBEL y Cierre Final (Pantalla 5)
+        function startConstellationSequence() {
+            const fxCanvas = document.getElementById('fx-canvas');
+            const fCtx = fxCanvas.getContext('2d');
+            fxCanvas.width = window.innerWidth;
+            fxCanvas.height = window.innerHeight;
+
+            // Coordenadas aproximadas para formar "GESIBEL" en el centro de la pantalla
+            const cx = window.innerWidth / 2 - 150;
+            const cy = window.innerHeight / 2 - 100;
+            
+            const constelationPoints = [
+                // G
+                {x: cx + 40, y: cy + 20}, {x: cx + 20, y: cy + 30}, {x: cx + 20, y: cy + 60}, {x: cx + 40, y: cy + 70}, {x: cx + 60, y: cy + 60}, {x: cx + 60, y: cy + 45}, {x: cx + 45, y: cy + 45},
+                // E
+                {x: cx + 80, y: cy + 20}, {x: cx + 80, y: cy + 70}, {x: cx + 100, y: cy + 20}, {x: cx + 95, y: cy + 45}, {x: cx + 100, y: cy + 70},
+                // S
+                {x: cx + 140, y: cy + 20}, {x: cx + 120, y: cy + 25}, {x: cx + 120, y: cy + 45}, {x: cx + 140, y: cy + 45}, {x: cx + 140, y: cy + 70}, {x: cx + 120, y: cy + 70},
+                // I
+                {x: cx + 165, y: cy + 20}, {x: cx + 165, y: cy + 70},
+                // B
+                {x: cx + 190, y: cy + 20}, {x: cx + 190, y: cy + 70}, {x: cx + 210, y: cy + 25}, {x: cx + 205, y: cy + 45}, {x: cx + 215, y: cy + 70},
+                // E
+                {x: cx + 235, y: cy + 20}, {x: cx + 235, y: cy + 70}, {x: cx + 255, y: cy + 20}, {x: cx + 250, y: cy + 45}, {x: cx + 255, y: cy + 70},
+                // L
+                {x: cx + 280, y: cy + 20}, {x: cx + 280, y: cy + 70}, {x: cx + 300, y: cy + 70}
+            ];
+
+            let currentPoint = 0;
+
+            function drawStep() {
+                if (currentPoint < constelationPoints.length) {
+                    let p = constelationPoints[currentPoint];
+                    fCtx.fillStyle = '#fef08a';
+                    fCtx.shadowBlur = 10;
+                    fCtx.shadowColor = '#f472b6';
+                    fCtx.beginPath();
+                    fCtx.arc(p.x, p.y, 3.5, 0, Math.PI * 2);
+                    fCtx.fill();
+
+                    if (currentPoint > 0) {
+                        let prev = constelationPoints[currentPoint - 1];
+                        // Evitar conectar letras distintas cortando trazos principales
+                        if (![7, 12, 18, 20, 25, 30].includes(currentPoint)) {
+                            fCtx.strokeStyle = 'rgba(216, 180, 254, 0.6)';
+                            fCtx.lineWidth = 1.5;
+                            fCtx.beginPath();
+                            fCtx.moveTo(prev.x, prev.y);
+                            fCtx.lineTo(p.x, p.y);
+                            fCtx.stroke();
+                        }
+                    }
+                    currentPoint++;
+                    setTimeout(drawStep, 150);
+                } else {
+                    // Mostrar dedicatoria final
+                    setTimeout(() => {
+                        document.getElementById('final-message').style.opacity = '1';
+                    }, 800);
+                }
+            }
+            setTimeout(drawStep, 1000);
         }
     </script>
-
 </body>
 </html>
