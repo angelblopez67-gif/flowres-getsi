@@ -1,402 +1,350 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Para Getsi</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para Getsi 🌌💜</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: radial-gradient(circle at center, #180a2a 0%, #06020c 100%);
+            color: #fce4ec;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
 
-    body {
-      background: #08051a;
-      height: 100vh;
-      overflow: hidden;
-      font-family: Georgia, 'Times New Roman', serif;
-      color: #e6d9ff;
-      user-select: none;
-      -webkit-tap-highlight-color: transparent;
-    }
+        /* Fondo de estrellas dinámicas animadas */
+        #space-sky {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
 
-    #sky {
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(ellipse at 50% 30%, #1c1438 0%, #0a0618 65%);
-    }
+        .background-star {
+            position: absolute;
+            background: #fff;
+            border-radius: 50%;
+            animation: twinkle var(--duration) infinite ease-in-out;
+        }
 
-    /* Estrellas de fondo */
-    .bg-star {
-      position: absolute;
-      background: #fff;
-      border-radius: 50%;
-      opacity: 0.55;
-      animation: twinkle 4s infinite ease-in-out;
-    }
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.1; transform: scale(0.6); }
+            50% { opacity: 1; transform: scale(1.4); }
+        }
 
-    @keyframes twinkle {
-      0%, 100% { opacity: 0.25; transform: scale(0.7); }
-      50% { opacity: 0.95; transform: scale(1.15); }
-    }
+        /* Sistema de pantallas con animaciones fluidas de entrada y salida */
+        .screen {
+            display: none;
+            position: absolute;
+            text-align: center;
+            width: 100%;
+            height: 100%;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            opacity: 0;
+            transform: scale(0.9);
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 20px;
+            box-sizing: border-box;
+            z-index: 10;
+        }
 
-    /* Flores */
-    .flower-container {
-      position: absolute;
-      bottom: 0;
-      width: 100%;
-      height: 180px;
-      pointer-events: none;
-    }
+        .screen.active {
+            display: flex;
+            opacity: 1;
+            transform: scale(1);
+            animation: screenEntrance 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
 
-    .flower {
-      position: absolute;
-      bottom: 0;
-      transform-origin: bottom center;
-      animation: sway 7s ease-in-out infinite;
-    }
+        @keyframes screenEntrance {
+            0% { opacity: 0; transform: scale(0.9) translateY(20px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
 
-    .stem {
-      width: 3px;
-      background: linear-gradient(to top, #f5b0c2, #f8c8d4);
-      margin: 0 auto;
-      border-radius: 4px;
-      position: relative;
-    }
+        .sky-container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+        }
 
-    .leaf {
-      position: absolute;
-      width: 14px;
-      height: 8px;
-      background: #d4a0e0;
-      border-radius: 50% 0 50% 0;
-      opacity: 0.8;
-    }
+        /* Estrellas interactivas con animación de parpadeo y flotación */
+        .star-node {
+            position: absolute;
+            background: #fff;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 20px #f48fb1;
+            animation: starPulse 2s infinite alternate;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
 
-    .petals {
-      position: absolute;
-      top: -22px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 42px;
-      height: 42px;
-    }
+        @keyframes starPulse {
+            0% { transform: scale(1); box-shadow: 0 0 15px #f48fb1; }
+            100% { transform: scale(1.2); box-shadow: 0 0 30px #ce93d8; }
+        }
 
-    .petal {
-      position: absolute;
-      width: 18px;
-      height: 26px;
-      background: linear-gradient(135deg, #d4a8f0, #b07cd8);
-      border-radius: 50% 50% 40% 40%;
-      top: 6px;
-      left: 12px;
-      transform-origin: center 85%;
-      box-shadow: 0 0 6px rgba(180, 120, 220, 0.3);
-    }
+        .star-node:hover {
+            transform: scale(1.8) !important;
+            box-shadow: 0 0 40px #fff;
+        }
 
-    .petal:nth-child(1) { transform: rotate(0deg); }
-    .petal:nth-child(2) { transform: rotate(72deg); }
-    .petal:nth-child(3) { transform: rotate(144deg); }
-    .petal:nth-child(4) { transform: rotate(216deg); }
-    .petal:nth-child(5) { transform: rotate(288deg); }
+        #star-info {
+            position: absolute;
+            bottom: 90px;
+            background: rgba(26, 14, 43, 0.95);
+            border: 1px solid rgba(244, 143, 177, 0.5);
+            padding: 14px 26px;
+            border-radius: 25px;
+            font-size: 0.95rem;
+            color: #f8bbd0;
+            box-shadow: 0 0 25px rgba(186, 104, 200, 0.4);
+            display: none;
+            max-width: 85%;
+            z-index: 20;
+            animation: fadeIn 0.4s ease;
+        }
 
-    .center {
-      position: absolute;
-      width: 12px;
-      height: 12px;
-      background: #f0d8ff;
-      border-radius: 50%;
-      top: 14px;
-      left: 15px;
-      box-shadow: 0 0 10px #e0b8ff;
-    }
+        /* Botón con animación de brillo constante */
+        .btn-custom {
+            background: linear-gradient(135deg, #ab47bc, #ec407a);
+            border: none;
+            color: white;
+            padding: 14px 34px;
+            font-size: 1.1rem;
+            border-radius: 35px;
+            cursor: pointer;
+            box-shadow: 0 0 25px rgba(171, 71, 188, 0.5);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-top: 25px;
+            letter-spacing: 1px;
+            animation: btnGlow 3s infinite alternate;
+        }
 
-    @keyframes sway {
-      0%, 100% { transform: rotate(-4deg); }
-      50% { transform: rotate(4deg); }
-    }
+        @keyframes btnGlow {
+            0% { box-shadow: 0 0 15px rgba(171, 71, 188, 0.4); }
+            100% { box-shadow: 0 0 30px rgba(236, 64, 122, 0.8); }
+        }
 
-    /* Constelación */
-    #constellation {
-      position: absolute;
-      top: 22%;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 94vw;
-      max-width: 440px;
-      height: 180px;
-      z-index: 5;
-    }
+        .btn-custom:hover {
+            transform: scale(1.08);
+            box-shadow: 0 0 40px rgba(236, 64, 122, 1);
+        }
 
-    #constellation svg {
-      width: 100%;
-      height: 100%;
-      overflow: visible;
-    }
+        /* Ramo Vectorial con animación de flotación suave y orgánica */
+        .vector-bouquet {
+            width: 210px;
+            height: 260px;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 0 25px rgba(244, 143, 177, 0.5));
+            animation: floatBouquet 4s ease-in-out infinite;
+        }
 
-    .c-star {
-      fill: #fff;
-      opacity: 0;
-      filter: drop-shadow(0 0 5px #d8b8ff);
-      transition: opacity 0.7s ease;
-    }
+        @keyframes floatBouquet {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-12px) rotate(1.5deg); }
+        }
 
-    .c-star.on {
-      opacity: 1;
-    }
+        /* Carta con efecto de aparición gradual */
+        .letter-box {
+            max-width: 460px;
+            padding: 30px;
+            background: rgba(26, 14, 43, 0.92);
+            border: 1px solid rgba(244, 143, 177, 0.4);
+            border-radius: 20px;
+            box-shadow: 0 0 35px rgba(186, 104, 200, 0.3);
+            text-align: left;
+            line-height: 1.7;
+            font-size: 1.05rem;
+            animation: letterSlide 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
 
-    .c-line {
-      stroke: #c9a0e8;
-      stroke-width: 1.3;
-      stroke-linecap: round;
-      opacity: 0;
-      transition: opacity 0.9s ease;
-    }
+        @keyframes letterSlide {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-    .c-line.on {
-      opacity: 0.65;
-    }
-
-    /* Texto e instrucciones */
-    #hint {
-      position: absolute;
-      bottom: 14%;
-      width: 100%;
-      text-align: center;
-      font-size: 14px;
-      letter-spacing: 1.5px;
-      opacity: 0.55;
-      transition: opacity 1.2s;
-      z-index: 10;
-    }
-
-    #hint.hide {
-      opacity: 0;
-    }
-
-    #final-msg {
-      position: absolute;
-      bottom: 16%;
-      width: 100%;
-      text-align: center;
-      opacity: 0;
-      transition: opacity 2.2s ease;
-      padding: 0 24px;
-      z-index: 10;
-    }
-
-    #final-msg.show {
-      opacity: 1;
-    }
-
-    #final-msg p {
-      font-size: 15px;
-      line-height: 1.65;
-      color: #d4c4f0;
-      text-shadow: 0 0 14px rgba(160, 120, 230, 0.35);
-    }
-
-    /* Destellos */
-    .spark {
-      position: absolute;
-      width: 5px;
-      height: 5px;
-      background: #fff;
-      border-radius: 50%;
-      pointer-events: none;
-      box-shadow: 0 0 10px #e8d0ff;
-      animation: spark-anim 0.9s forwards;
-      z-index: 20;
-    }
-
-    @keyframes spark-anim {
-      0% { transform: scale(1); opacity: 1; }
-      100% { transform: scale(0); opacity: 0; }
-    }
-  </style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
 </head>
 <body>
 
-  <div id="sky"></div>
+    <!-- Fondo de estrellas dinámicas -->
+    <div id="space-sky"></div>
 
-  <!-- Flores -->
-  <div class="flower-container">
-    <div class="flower" style="left: 6%; animation-delay: 0s;">
-      <div class="stem" style="height: 110px;"></div>
-      <div class="leaf" style="top: 45px; left: -8px; transform: rotate(-25deg);"></div>
-      <div class="leaf" style="top: 70px; left: 6px; transform: rotate(30deg);"></div>
-      <div class="petals">
-        <div class="petal"></div><div class="petal"></div><div class="petal"></div>
-        <div class="petal"></div><div class="petal"></div>
-        <div class="center"></div>
-      </div>
+    <!-- Pantalla 1 -->
+    <div class="screen active" id="screen1">
+        <h1 style="font-weight: 300; letter-spacing: 2px; font-size: 1.8rem; text-shadow: 0 0 15px rgba(244,143,177,0.5);">Tengo algo para ti, Getsi ✨</h1>
+        <button class="btn-custom" onclick="nextScreen(2)">Entrar al universo 🌌</button>
     </div>
 
-    <div class="flower" style="left: 24%; animation-delay: 1.4s; transform: scale(0.82);">
-      <div class="stem" style="height: 85px;"></div>
-      <div class="leaf" style="top: 40px; left: -6px; transform: rotate(-20deg);"></div>
-      <div class="petals">
-        <div class="petal"></div><div class="petal"></div><div class="petal"></div>
-        <div class="petal"></div><div class="petal"></div>
-        <div class="center"></div>
-      </div>
+    <!-- Pantalla 2 -->
+    <div class="screen" id="screen2">
+        <div class="sky-container">
+            <div class="star-node" style="width: 16px; height: 16px; top: 25%; left: 25%; animation-delay: 0.2s;" onclick="showStarInfo('Sirio: La estrella que ilumina todo con más fuerza. ⭐')"></div>
+            <div class="star-node" style="width: 12px; height: 12px; top: 20%; left: 70%; animation-delay: 0.7s;" onclick="showStarInfo('Andrómeda: Un guiño infinito en el cielo nocturno. 🌌')"></div>
+            <div class="star-node" style="width: 18px; height: 18px; top: 65%; left: 75%; animation-delay: 1.1s;" onclick="showStarInfo('La Luna: Silenciosa testigo de todo esto. 🌙')"></div>
+            <div class="star-node" style="width: 14px; height: 14px; top: 60%; left: 20%; animation-delay: 0.5s;" onclick="showStarInfo('Estrella Fugaz: El destello de un deseo cumplido. 🌠')"></div>
+            <!-- Estrella central interactiva con brillo especial -->
+            <div class="star-node" style="width: 24px; height: 24px; top: 45%; left: 48%; box-shadow: 0 0 35px #ab47bc; animation: starPulse 1s infinite alternate;" onclick="nextScreen(3)"></div>
+            
+            <div style="position: absolute; bottom: 35px; width: 100%; text-align: center; color: #d1c4e9; font-size: 0.9rem; padding: 0 20px;">
+                Toca las estrellas del firmamento... (la del centro guarda un secreto 💫)
+            </div>
+            <div id="star-info">Toca una estrella para descubrir su mensaje. ✨</div>
+        </div>
     </div>
 
-    <div class="flower" style="left: 58%; animation-delay: 0.7s;">
-      <div class="stem" style="height: 125px;"></div>
-      <div class="leaf" style="top: 55px; left: -9px; transform: rotate(-28deg);"></div>
-      <div class="leaf" style="top: 80px; left: 7px; transform: rotate(25deg);"></div>
-      <div class="petals">
-        <div class="petal"></div><div class="petal"></div><div class="petal"></div>
-        <div class="petal"></div><div class="petal"></div>
-        <div class="center"></div>
-      </div>
+    <!-- Pantalla 3 -->
+    <div class="screen" id="screen3">
+        <h2 style="font-weight: 300; letter-spacing: 1px; color: #d1c4e9; font-size: 1.5rem;">Hay cosas que todavía no te he contado…</h2>
+        <button class="btn-custom" onclick="nextScreen(4)">Descubrir el ramo 💐</button>
     </div>
 
-    <div class="flower" style="left: 78%; animation-delay: 2s; transform: scale(0.75);">
-      <div class="stem" style="height: 75px;"></div>
-      <div class="petals">
-        <div class="petal"></div><div class="petal"></div><div class="petal"></div>
-        <div class="petal"></div><div class="petal"></div>
-        <div class="center"></div>
-      </div>
+    <!-- Pantalla 4: Ramo con animación de flotación -->
+    <div class="screen" id="screen4">
+        <svg class="vector-bouquet" viewBox="0 0 200 250" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M100 130 L90 220" stroke="#66bb6a" stroke-width="4" stroke-linecap="round"/>
+            <path d="M100 130 L110 220" stroke="#81c784" stroke-width="4" stroke-linecap="round"/>
+            <path d="M100 130 L100 230" stroke="#4caf50" stroke-width="5" stroke-linecap="round"/>
+            
+            <path d="M70 180 C85 170 115 170 130 180 C140 200 120 215 100 210 C80 215 60 200 70 180 Z" fill="#ba68c8" opacity="0.85"/>
+            <path d="M60 175 C45 160 50 140 70 155 Z" fill="#ab47bc"/>
+            <path d="M140 175 C155 160 150 140 130 155 Z" fill="#ab47bc"/>
+
+            <circle cx="100" cy="85" r="32" fill="url(#gradRose1)" />
+            <circle cx="100" cy="85" r="20" fill="url(#gradRose2)" opacity="0.7"/>
+            <circle cx="65" cy="100" r="26" fill="url(#gradTulip1)" />
+            <circle cx="135" cy="100" r="26" fill="url(#gradTulip2)" />
+            <circle cx="80" cy="55" r="24" fill="url(#gradRose2)" />
+            <circle cx="120" cy="55" r="24" fill="url(#gradRose1)" />
+
+            <circle cx="95" cy="78" r="3" fill="#fff" />
+            <circle cx="125" cy="95" r="2.5" fill="#fff" />
+            <circle cx="75" cy="95" r="2.5" fill="#fff" />
+
+            <defs>
+                <radialGradient id="gradRose1" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stop-color="#f48fb1" />
+                    <stop offset="100%" stop-color="#ad1457" />
+                </radialGradient>
+                <radialGradient id="gradRose2" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stop-color="#f8bbd0" />
+                    <stop offset="100%" stop-color="#c2185b" />
+                </radialGradient>
+                <radialGradient id="gradTulip1" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stop-color="#e1bee7" />
+                    <stop offset="100%" stop-color="#7b1fa2" />
+                </radialGradient>
+                <radialGradient id="gradTulip2" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stop-color="#ce93d8" />
+                    <stop offset="100%" stop-color="#8e24aa" />
+                </radialGradient>
+            </defs>
+        </svg>
+
+        <h3 style="font-weight: 300; color: #f8bbd0; font-size: 1.3rem; margin-top: 5px;">Esto es para ti, Getsi. 💜✨</h3>
+        <button class="btn-custom" onclick="nextScreen(5)">Leer la carta 💌</button>
     </div>
-  </div>
 
-  <!-- Constelación GETSI -->
-  <div id="constellation">
-    <svg viewBox="0 0 420 160" preserveAspectRatio="xMidYMid meet">
-      <!-- G -->
-      <circle class="c-star" cx="28" cy="35" r="3.2"/>
-      <circle class="c-star" cx="18" cy="58" r="3.2"/>
-      <circle class="c-star" cx="25" cy="85" r="3.2"/>
-      <circle class="c-star" cx="48" cy="98" r="3.2"/>
-      <circle class="c-star" cx="68" cy="78" r="3.2"/>
-      <circle class="c-star" cx="58" cy="52" r="3.2"/>
+    <!-- Pantalla 5 -->
+    <div class="screen" id="screen5">
+        <div class="letter-box">
+            <p>Estas flores y este detalle es con mucho amor y cariño para ti mi Getsi. Sé que has pasado por momentos difíciles y decepciones de personas que no valen la pena, pero como las estrellas, llegaste a mi vida para iluminarla y llenarla de color...</p>
+            <p style="margin-top: 15px;"><strong>Te amo con todo mi corazón. ❤️✨</strong></p>
+            <p style="text-align: right; margin-top: 15px; color: #f8bbd0;"><em>Tu rabanito 🥹❤️</em></p>
+        </div>
+        <button class="btn-custom" onclick="nextScreen(6)">Ver el cielo final ⭐</button>
+    </div>
 
-      <!-- E -->
-      <circle class="c-star" cx="105" cy="32" r="3.2"/>
-      <circle class="c-star" cx="105" cy="58" r="3.2"/>
-      <circle class="c-star" cx="105" cy="90" r="3.2"/>
-      <circle class="c-star" cx="132" cy="32" r="3.2"/>
-      <circle class="c-star" cx="130" cy="58" r="3.2"/>
-      <circle class="c-star" cx="132" cy="90" r="3.2"/>
+    <!-- Pantalla 6 -->
+    <div class="screen" id="screen6">
+        <svg width="340" height="140" viewBox="0 0 340 140" style="overflow: visible; margin-bottom: 15px;">
+            <path d="M 20,70 L 45,30 L 70,70 L 45,110 Z M 90,30 L 90,110 M 115,30 L 140,30 L 115,70 L 140,110 M 165,30 L 165,110 M 190,30 L 215,30 L 190,70 L 215,70 M 240,30 L 240,110 L 265,110 M 290,30 L 290,110 M 290,30 L 315,70 L 290,70" 
+                  stroke="rgba(244, 143, 177, 0.7)" stroke-width="2.5" fill="none" stroke-dasharray="800" stroke-dashoffset="800">
+                <animate attributeName="stroke-dashoffset" from="800" to="0" dur="5s" fill="freeze" />
+            </path>
+            <circle cx="20" cy="70" r="3.5" fill="#fff" filter="drop-shadow(0 0 8px #ab47bc)" />
+            <circle cx="45" cy="30" r="3.5" fill="#fff" filter="drop-shadow(0 0 8px #ab47bc)" />
+            <circle cx="70" cy="70" r="3.5" fill="#fff" filter="drop-shadow(0 0 8px #ab47bc)" />
+            <circle cx="45" cy="110" r="3.5" fill="#fff" filter="drop-shadow(0 0 8px #ab47bc)" />
+            <circle cx="90" cy="30" r="3.5" fill="#fff" filter="drop-shadow(0 0 8px #ab47bc)" />
+            <circle cx="90" cy="110" r="3.5" fill="#fff" filter="drop-shadow(0 0 8px #ab47bc)" />
+            <circle cx="115" cy="30" r="3.5" fill="#fff" filter="drop-shadow(0 0 8px #ab47bc)" />
+            <circle cx="140" cy="30" r="3.5" fill="#fff" filter="drop-shadow(0 0 8px #ab47bc)" />
+            <circle cx="115" cy="70" r="3.5" fill="#fff" filter="drop-shadow(0 0 8px #ab47bc)" />
+            <circle cx="140" cy="110" r="3.5" fill="#fff" filter="drop-shadow(0 0 8px #ab47bc)" />
+            <circle cx="165" cy="30" r="3.5" fill="#fff" filter="drop-shadow(0 0 8px #ab47bc)" />
+            <circle cx="165" cy="110" r="3.5" fill="#fff" filter="drop-shadow(0 0 8px #ab47bc)" />
+            <circle cx="190" cy="30" r="3.5" fill="#fff" filter="drop-shadow(0 0 8px #ab47bc)" />
+            <circle cx="215" cy="30" r="3.5" fill="#fff" filter="drop-shadow(0 0 8px #ab47bc)" />
+            <circle cx="190" cy="70" r="3.5" fill="#fff" filter="drop-shadow(0 0 8px #ab47bc)" />
+            <circle cx="215" cy="70" r="3.5" fill="#fff" filter="drop-shadow(0 0 8px #ab47bc)" />
+            <circle cx="240" cy="30" r="3.5" fill="#fff" filter="drop-shadow(0 0 8px #ab47bc)" />
+            <circle cx="240" cy="110" r="3.5" fill="#fff" filter="drop-shadow(0 0 8px #ab47bc)" />
+            <circle cx="265" cy="110" r="3.5" fill="#fff" filter="drop-shadow(0 0 8px #ab47bc)" />
+            <circle cx="290" cy="30" r="3.5" fill="#fff" filter="drop-shadow(0 0 8px #ab47bc)" />
+            <circle cx="290" cy="110" r="3.5" fill="#fff" filter="drop-shadow(0 0 8px #ab47bc)" />
+            <circle cx="315" cy="70" r="3.5" fill="#fff" filter="drop-shadow(0 0 8px #ab47bc)" />
+            <circle cx="330" cy="70" r="6" fill="#fff" filter="drop-shadow(0 0 15px #f48fb1)">
+                <animate attributeName="opacity" values="1;0.3;1" dur="2s" repeatCount="indefinite" />
+            </circle>
+        </svg>
+        <div style="font-size: 1.15rem; color: #f8bbd0; font-weight: 300; line-height: 1.6; margin-top: 15px; text-shadow: 0 0 10px rgba(248,187,208,0.4);">
+            Gracias por ser ese Sirio que necesitaba mi vida. ✨<br>
+            <strong>Te amo, Getsi. ❤️</strong>
+        </div>
+    </div>
 
-      <!-- T -->
-      <circle class="c-star" cx="175" cy="32" r="3.2"/>
-      <circle class="c-star" cx="198" cy="32" r="3.2"/>
-      <circle class="c-star" cx="221" cy="32" r="3.2"/>
-      <circle class="c-star" cx="198" cy="58" r="3.2"/>
-      <circle class="c-star" cx="198" cy="92" r="3.2"/>
+    <script>
+        // Generador de estrellas de fondo con parpadeo aleatorio
+        const sky = document.getElementById('space-sky');
+        const starCount = 90;
+        for (let i = 0; i < starCount; i++) {
+            const star = document.createElement('div');
+            star.classList.add('background-star');
+            const size = Math.random() * 3 + 1;
+            star.style.width = `${size}px`;
+            star.style.height = `${size}px`;
+            star.style.top = `${Math.random() * 100}%`;
+            star.style.left = `${Math.random() * 100}%`;
+            star.style.setProperty('--duration', `${Math.random() * 3 + 2}s`);
+            star.style.animationDelay = `${Math.random() * 5}s`;
+            sky.appendChild(star);
+        }
 
-      <!-- S -->
-      <circle class="c-star" cx="268" cy="38" r="3.2"/>
-      <circle class="c-star" cx="252" cy="55" r="3.2"/>
-      <circle class="c-star" cx="268" cy="72" r="3.2"/>
-      <circle class="c-star" cx="285" cy="88" r="3.2"/>
-      <circle class="c-star" cx="268" cy="102" r="3.2"/>
+        function nextScreen(screenNumber) {
+            const currentActive = document.querySelector('.screen.active');
+            if (currentActive) {
+                currentActive.classList.remove('active');
+            }
+            setTimeout(() => {
+                const nextTarget = document.getElementById('screen' + screenNumber);
+                if (nextTarget) {
+                    nextTarget.classList.add('active');
+                }
+            }, 400);
+        }
 
-      <!-- I -->
-      <circle class="c-star" cx="330" cy="32" r="3.2"/>
-      <circle class="c-star" cx="330" cy="58" r="3.2"/>
-      <circle class="c-star" cx="330" cy="92" r="3.2"/>
+        function showStarInfo(text) {
+            const infoBox = document.getElementById('star-info');
+            infoBox.innerText = text;
+            infoBox.style.display = 'block';
+            setTimeout(() => {
+                infoBox.style.display = 'none';
+            }, 4000);
+        }
+    </script>
 
-      <!-- Líneas -->
-      <line class="c-line" x1="28" y1="35" x2="18" y2="58"/>
-      <line class="c-line" x1="18" y1="58" x2="25" y2="85"/>
-      <line class="c-line" x1="25" y1="85" x2="48" y2="98"/>
-      <line class="c-line" x1="48" y1="98" x2="68" y2="78"/>
-      <line class="c-line" x1="68" y1="78" x2="58" y2="52"/>
-
-      <line class="c-line" x1="105" y1="32" x2="105" y2="90"/>
-      <line class="c-line" x1="105" y1="32" x2="132" y2="32"/>
-      <line class="c-line" x1="105" y1="58" x2="130" y2="58"/>
-      <line class="c-line" x1="105" y1="90" x2="132" y2="90"/>
-
-      <line class="c-line" x1="175" y1="32" x2="221" y2="32"/>
-      <line class="c-line" x1="198" y1="32" x2="198" y2="92"/>
-
-      <line class="c-line" x1="268" y1="38" x2="252" y2="55"/>
-      <line class="c-line" x1="252" y1="55" x2="268" y2="72"/>
-      <line class="c-line" x1="268" y1="72" x2="285" y2="88"/>
-      <line class="c-line" x1="285" y1="88" x2="268" y2="102"/>
-
-      <line class="c-line" x1="330" y1="32" x2="330" y2="92"/>
-    </svg>
-  </div>
-
-  <div id="hint">Toca la pantalla</div>
-
-  <div id="final-msg">
-    <p>Algunas estrellas brillan más fuerte<br>cuando tienen un nombre especial.</p>
-  </div>
-
-  <script>
-    // Estrellas de fondo
-    const sky = document.getElementById('sky');
-    for (let i = 0; i < 140; i++) {
-      const star = document.createElement('div');
-      star.className = 'bg-star';
-      const size = Math.random() * 2.4 + 0.7;
-      star.style.width = size + 'px';
-      star.style.height = size + 'px';
-      star.style.left = Math.random() * 100 + '%';
-      star.style.top = Math.random() * 100 + '%';
-      star.style.animationDelay = Math.random() * 5 + 's';
-      star.style.animationDuration = (2.5 + Math.random() * 3.5) + 's';
-      sky.appendChild(star);
-    }
-
-    const cStars = document.querySelectorAll('.c-star');
-    const cLines = document.querySelectorAll('.c-line');
-    let started = false;
-
-    function startExperience() {
-      if (started) return;
-      started = true;
-
-      document.getElementById('hint').classList.add('hide');
-
-      // Aparecen las estrellas de la constelación
-      cStars.forEach((star, index) => {
-        setTimeout(() => {
-          star.classList.add('on');
-        }, index * 160);
-      });
-
-      // Luego las líneas
-      setTimeout(() => {
-        cLines.forEach((line, index) => {
-          setTimeout(() => {
-            line.classList.add('on');
-          }, index * 110);
-        });
-      }, cStars.length * 160 + 500);
-
-      // Mensaje final
-      setTimeout(() => {
-        document.getElementById('final-msg').classList.add('show');
-      }, cStars.length * 160 + cLines.length * 110 + 1400);
-    }
-
-    function createSpark(x, y) {
-      const spark = document.createElement('div');
-      spark.className = 'spark';
-      spark.style.left = (x - 2.5) + 'px';
-      spark.style.top = (y - 2.5) + 'px';
-      document.body.appendChild(spark);
-      setTimeout(() => spark.remove(), 900);
-    }
-
-    function onInteract(e) {
-      const point = e.touches ? e.touches[0] : e;
-      createSpark(point.clientX, point.clientY);
-      startExperience();
-    }
-
-    document.addEventListener('click', onInteract);
-    document.addEventListener('touchstart', onInteract, { passive: true });
-  </script>
 </body>
 </html>
